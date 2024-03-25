@@ -898,52 +898,63 @@
 
       <form action="contact.php" method="post" role="form" class="php-email-form mt-4" id="contact-form">
         <div class="row">
-            <div class="col-md-6 form-group">
-                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-            </div>
-            <div class="col-md-6 form-group mt-3 mt-md-0">
-                <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-            </div>
+          <div class="col-md-6 form-group">
+            <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
+          </div>
+          <div class="col-md-6 form-group mt-3 mt-md-0">
+            <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
+          </div>
         </div>
         <div class="form-group mt-3">
-            <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
+          <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
         </div>
         <div class="form-group mt-3">
-            <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
+          <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
         </div>
         <div id="success-message" class="my-3" style="display: none;">
-            <div class="sent-message">Your message has been sent. Thank you!</div>
+          <div class="sent-message">Your message has been sent. Thank you!</div>
         </div>
         <div class="text-center"><button type="submit">Send Message</button></div>
-    </form>
-
-    <script>
-        document.getElementById('contact-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            var name = document.getElementById('name').value;
-            var email = document.getElementById('email').value;
-            var subject = document.getElementById('subject').value;
-            var message = document.getElementById('message').value;
-
-            // Kirim data formulir menggunakan AJAX
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', 'contact.php', true);
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    document.getElementById('contact-form').reset(); // Reset formulir setelah berhasil dikirim
-                    document.getElementById('success-message').style.display = 'block'; // Tampilkan pesan sukses
-                } else {
-                    alert('Error: ' + xhr.statusText); // Tampilkan pesan error jika terjadi kesalahan saat mengirim
-                }
-            };
-            xhr.onerror = function() {
-                alert('Request failed'); // Tampilkan pesan error jika terjadi kesalahan saat mengirim
-            };
-            xhr.send('name=' + encodeURIComponent(name) + '&email=' + encodeURIComponent(email) + '&subject=' + encodeURIComponent(subject) + '&message=' + encodeURIComponent(message));
+      </form>
+      
+    
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var contactForm = document.getElementById("contact-form");
+        
+            contactForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(contactForm);
+                var xhr = new XMLHttpRequest();
+                xhr.open(contactForm.method, contactForm.action);
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState !== XMLHttpRequest.DONE) return;
+                    
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === "success") {
+                            // Tampilkan notifikasi sukses
+                            alert("Your message has been sent. Thank you!");
+        
+                            // Reset formulir
+                            contactForm.reset();
+                        } else {
+                            // Tampilkan pesan error jika ada
+                            alert("Error: " + response.message);
+                        }
+                    } else {
+                        // Tampilkan pesan error jika ada
+                        alert("Error: Form submission failed!");
+                    }
+                };
+                xhr.send(formData);
+            });
         });
-    </script>
+        </script>
+        
+        
 
     </div>
   </section><!-- End Contact Section -->
