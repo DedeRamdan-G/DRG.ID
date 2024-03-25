@@ -917,6 +917,33 @@
         <div class="text-center"><button type="submit">Send Message</button></div>
       </form>
       
+      <script>
+        document.getElementById('contact-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var name = document.getElementById('name').value;
+            var email = document.getElementById('email').value;
+            var subject = document.getElementById('subject').value;
+            var message = document.getElementById('message').value;
+
+            Email.send({
+                Host: "smtp.gmail.com", // Ganti dengan host SMTP Anda
+                Username: "pribaditugasboy@gmail.com", // Ganti dengan username SMTP Anda
+                Password: "ndknypmoxfnscxnp", // Ganti dengan password SMTP Anda
+                To: "ddermdangnwn@gmail.com", // Ganti dengan alamat email penerima
+                From: email,
+                Subject: subject,
+                Body: "Name: " + name + "<br>Email: " + email + "<br>Message: " + message
+            }).then(function(response) {
+                if (response === "OK") {
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('contact-form').reset();
+                } else {
+                    alert("Error: " + response);
+                }
+            });
+        });
+    </script>
     
       <script>
         document.addEventListener("DOMContentLoaded", function() {
