@@ -36,9 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Kirim email
         $mail->send();
 
-        echo "success";  // Print "success" when the email is successfully sent
+        // Kirim respons JSON
+        header('Content-type: application/json');
+        echo json_encode(array('status' => 'success')); // Kirim pesan sukses
+        exit(); // Keluar dari skrip setelah mengirim respons JSON
     } catch (Exception $e) {
-        echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        // Kirim respons JSON dengan pesan error
+        header('Content-type: application/json');
+        echo json_encode(array('status' => 'error', 'message' => "Message could not be sent. Mailer Error: {$mail->ErrorInfo}"));
+        exit(); // Keluar dari skrip setelah mengirim respons JSON
     }   
 } else {
     // Jika tidak ada permintaan POST, kembalikan status lainnya

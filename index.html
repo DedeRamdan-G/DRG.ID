@@ -896,7 +896,7 @@
         </div>
       </div>
 
-      <form action="contact.php" method="post" role="form" class="php-email-form mt-4">
+      <form action="contact.php" method="post" role="form" class="php-email-form mt-4" id="contact-form">
         <div class="row">
           <div class="col-md-6 form-group">
             <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
@@ -911,47 +911,49 @@
         <div class="form-group mt-3">
           <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
         </div>
-        <div class="my-3">
+        <div id="success-message" class="my-3" style="display: none;">
           <div class="sent-message">Your message has been sent. Thank you!</div>
         </div>
         <div class="text-center"><button type="submit">Send Message</button></div>
       </form>
       
-        <script>
-          // Ambil elemen-elemen yang dibutuhkan
-          var form = document.querySelector('.php-email-form');
-          var successMessage = form.querySelector('.sent-message');
-          var errorMessage = form.querySelector('.error-message');
-
-          // Periksa respons setelah pengiriman form
-          form.addEventListener('submit', function(event) {
-            event.preventDefault(); // Menghentikan pengiriman form default
-
-            // Kirim data form menggunakan AJAX
-            var formData = new FormData(form);
-            fetch(form.getAttribute('action'), {
-              method: 'POST',
-              body: formData
-            })
-            .then(function(response) {
-              // Periksa status respons
-              if (response.ok) {
-                // Jika sukses, tampilkan pesan sukses
-                successMessage.style.display = 'block';
-                errorMessage.style.display = 'none';
-              } else {
-                // Jika terjadi kesalahan, tampilkan pesan error
-                errorMessage.style.display = 'block';
-                successMessage.style.display = 'none';
-              }
-            })
-            .catch(function(error) {
-              console.error('Error:', error);
-              errorMessage.style.display = 'block';
-              successMessage.style.display = 'none';
+    
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var contactForm = document.getElementById("contact-form");
+        
+            contactForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+                
+                var formData = new FormData(contactForm);
+                var xhr = new XMLHttpRequest();
+                xhr.open(contactForm.method, contactForm.action);
+                xhr.setRequestHeader("Accept", "application/json");
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState !== XMLHttpRequest.DONE) return;
+                    
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        if (response.status === "success") {
+                            // Tampilkan notifikasi sukses
+                            alert("Your message has been sent. Thank you!");
+        
+                            // Reset formulir
+                            contactForm.reset();
+                        } else {
+                            // Tampilkan pesan error jika ada
+                            alert("Error: " + response.message);
+                        }
+                    } else {
+                        // Tampilkan pesan error jika ada
+                        alert("Error: Form submission failed!");
+                    }
+                };
+                xhr.send(formData);
             });
-          });
+        });
         </script>
+        
 
     </div>
   </section><!-- End Contact Section -->
